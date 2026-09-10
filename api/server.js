@@ -4,6 +4,7 @@ const { AppModule } = require('../dist/app.module');
 const express = require('express');
 const { join } = require('path');
 const { existsSync } = require('fs');
+require('hbs'); // Force Vercel to include hbs in the deployment
 
 const server = express();
 let cachedApp;
