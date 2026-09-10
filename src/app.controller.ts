@@ -33,11 +33,10 @@ export class AppController {
       // 2. Save lead to Google Sheets
       await this.sheetsService.addLead(name, email, company);
 
-      // Redirect instead of render to prevent re-submission on refresh (PRG pattern)
-      return res.redirect('/?success=true');
+      return res.status(200).json({ success: true });
     } catch (error) {
       console.error(error);
-      return res.redirect('/?error=true');
+      return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
   }
 }
