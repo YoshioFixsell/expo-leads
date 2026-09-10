@@ -39,9 +39,6 @@ export class EmailService {
           Html: {
             Data: `
               <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                  <img src="https://fixsell-prod-assets.s3.us-east-1.amazonaws.com/app-assets/fixsell-logo.png" alt="Fixsell Logo" style="max-width: 150px; height: auto;">
-                </div>
                 <h2 style="color: #007bff;">¡Hola ${name}!</h2>
                 <p>Muchas gracias por dejarnos tus datos y por tu interés en <strong>Fixsell</strong>.</p>
                 <p>Te escribimos para recordarte que <strong>nuestro equipo de ventas está a tu entera disposición</strong>. Estamos listos para resolver cualquier duda que tengas sobre nuestros productos, brindarte asesoría técnica y apoyarte con cualquier cotización que ocupes para tus proyectos.</p>
