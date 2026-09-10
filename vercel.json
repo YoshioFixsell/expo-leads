@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/server.js": {
+      "includeFiles": "views/**"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/server.js"
+    }
+  ]
+}
