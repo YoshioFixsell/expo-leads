@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/server.js": {
-      "includeFiles": "views/**"
+      "includeFiles": "{views/**,public/**}"
     }
   },
   "rewrites": [
