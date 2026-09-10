@@ -1,7 +1,12 @@
 {
+  "framework": null,
   "functions": {
     "api/server.js": {
-      "includeFiles": "{views/**,public/**}"
+      "includeFiles": [
+        "views/**",
+        "public/**",
+        "dist/**"
+      ]
     }
   },
   "rewrites": [

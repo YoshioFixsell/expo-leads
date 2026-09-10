@@ -3,6 +3,7 @@ const { ExpressAdapter } = require('@nestjs/platform-express');
 const { AppModule } = require('../dist/app.module');
 const express = require('express');
 const { join } = require('path');
+const { existsSync } = require('fs');
 
 const server = express();
 let cachedApp;
@@ -13,8 +14,17 @@ async function bootstrap() {
       AppModule,
       new ExpressAdapter(server),
     );
-    app.useStaticAssets(join(__dirname, '..', 'public'));
-    app.setBaseViewsDir(join(__dirname, '..', 'views'));
+
+    const publicDir = existsSync(join(process.cwd(), 'public'))
+      ? join(process.cwd(), 'public')
+      : join(__dirname, '..', 'public');
+
+    const viewsDir = existsSync(join(process.cwd(), 'views'))
+      ? join(process.cwd(), 'views')
+      : join(__dirname, '..', 'views');
+
+    app.useStaticAssets(publicDir);
+    app.setBaseViewsDir(viewsDir);
     app.setViewEngine('hbs');
     await app.init();
     cachedApp = server;
@@ -23,6 +33,20 @@ async function bootstrap() {
 }
 
 module.exports = async (req, res) => {
-  const app = await bootstrap();
-  return app(req, res);
+  try {
+    if (req.url) {
+      if (req.url.startsWith('/api/server.js')) {
+        req.url = req.url.replace('/api/server.js', '') || '/';
+      } else if (req.url.startsWith('/api/server')) {
+        req.url = req.url.replace('/api/server', '') || '/';
+      }
+    }
+    const app = await bootstrap();
+    return app(req, res);
+  } catch (err) {
+    console.error('Error in api/server.js:', err);
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.end('Server Error: ' + (err?.stack || err?.message || String(err)));
+  }
 };
