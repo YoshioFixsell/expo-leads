@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GoogleSpreadsheet } from 'google-spreadsheet';
+import type { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 
 @Injectable()
@@ -31,6 +31,7 @@ export class SheetsService {
       ],
     });
 
+    const { GoogleSpreadsheet } = await import('google-spreadsheet');
     this.doc = new GoogleSpreadsheet(sheetId, serviceAccountAuth);
     
     try {
