@@ -32,7 +32,7 @@ export class AppController {
 
       // 2. Intentar enviar el correo de bienvenida
       try {
-        await this.emailService.sendTestEmail(email, name);
+        await this.emailService.sendTestEmail(email, name, company);
       } catch (emailError) {
         // Si el correo falla, registramos el error pero NO detenemos el proceso.
         // El cliente ya está en tu base de datos, que es lo más importante.
