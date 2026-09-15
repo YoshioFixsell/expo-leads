@@ -1,82 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import { ConfigService } from '@nestjs/config';
-
-@Injectable()
-export class EmailService {
-  private readonly sesClient: SESClient;
-  private readonly logger = new Logger(EmailService.name);
-
-  constructor(private configService: ConfigService) {
-    this.sesClient = new SESClient({
-      region: this.configService.get('AWS_REGION') || 'us-east-1',
-      credentials: {
-        accessKeyId: this.configService.get('AWS_ACCESS_KEY_ID') || '',
-        secretAccessKey: this.configService.get('AWS_SECRET_ACCESS_KEY') || '',
-      },
-    });
-  }
-
-  async sendTestEmail(toEmail: string, name?: string, company?: string) {
-    const fromEmail = this.configService.get('SES_FROM_EMAIL');
-    
-    if (!fromEmail) {
-        this.logger.warn('SES_FROM_EMAIL is not configured. Email will not be sent.');
-        return;
-    }
-
-    const companyMention = company && company.trim() 
-      ? ` (<strong>${this.escapeHtml(company.trim())}</strong>)` 
-      : '';
-    const companyTextMention = company && company.trim() 
-      ? ` (${company.trim()})` 
-      : '';
-    const sanitizedName = name && name.trim() ? this.escapeHtml(name.trim()) : '';
-
-    const params = {
-      Source: fromEmail,
-      Destination: {
-        ToAddresses: [toEmail],
-      },
-      Message: {
-        Subject: {
-          Data: '¡Gracias por visitarnos en Expo Fespa 2026! | Fixsell del Norte',
-          Charset: 'UTF-8',
-        },
-        Body: {
-          Html: {
-            Data: this.buildHtmlTemplate(sanitizedName, companyMention),
-            Charset: 'UTF-8',
-          },
-          Text: {
-            Data: this.buildTextTemplate(sanitizedName, companyTextMention),
-            Charset: 'UTF-8',
-          }
-        },
-      },
-    };
-
-    try {
-      const command = new SendEmailCommand(params);
-      await this.sesClient.send(command);
-      this.logger.log(`Email sent successfully to ${toEmail}`);
-    } catch (error) {
-      this.logger.error('Error sending email via SES', error);
-      throw error;
-    }
-  }
-
-  private escapeHtml(text: string): string {
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  private buildHtmlTemplate(name?: string, companyMentionHtml: string = ''): string {
-    return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -147,7 +69,7 @@ export class EmailService {
 
               <!-- Introduction -->
               <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
-                En nombre de todo el equipo de Fixsell del Norte, queremos expresarle nuestro más sincero agradecimiento por habernos acompañado en <strong>Expo Fespa 2026</strong>${companyMentionHtml}. Su presencia en nuestro stand hizo de este evento un verdadero éxito.
+                En nombre de todo el equipo de Fixsell del Norte, queremos expresarle nuestro más sincero agradecimiento por habernos acompañado en <strong>Expo Fespa 2026</strong>. Su presencia en nuestro stand hizo de este evento un verdadero éxito.
               </p>
               
               <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #334155;">
@@ -284,36 +206,4 @@ export class EmailService {
     </tr>
   </table>
 </body>
-</html>`;
-  }
-
-  private buildTextTemplate(name?: string, companyTextMention: string = ''): string {
-    return `¡Gracias por su visita!
-
-En nombre de todo el equipo de Fixsell del Norte, queremos expresarle nuestro más sincero agradecimiento por habernos acompañado en Expo Fespa 2026${companyTextMention}. Su presencia en nuestro stand hizo de este evento un verdadero éxito.
-
-Fue un gran honor compartir con usted las últimas innovaciones tecnológicas de nuestras marcas aliadas: Konica Minolta, Kyocera, Epson, Fujifilm y Katun DPS. La confianza que deposita en nosotros nos impulsa a seguir ofreciéndole las mejores soluciones en impresión, gestión documental y artes gráficas.
-
-• Asesoría Técnica y Especializada: Le orientamos en la selección óptima de soluciones y equipos para las necesidades específicas de su negocio.
-• Cotizaciones Ágiles a su Medida: Elaboramos presupuestos claros y competitivos con rapidez para sus proyectos en puerta.
-• Atención Comercial Directa: Acompañamiento continuo y soluciones de suministro para impulsar el éxito de su operación.
-
-Nos pondremos en contacto con usted en los próximos días para dar seguimiento a los temas y equipos de su interés. Mientras tanto, quedamos a su entera disposición.
-
-¿Requiere asistencia inmediata o cotización directa?
-Llámenos al (81) 8114-3827 o responda directamente a este correo.
-
-Conoce más de nuestro catálogo y soluciones en:
-https://www.fixsell.com
-
-Esperamos tener la oportunidad de colaborar con usted muy pronto.
-
-Atentamente,
-El Equipo de Ventas y Soporte
-Fixsell del Norte, S.A. de C.V.
-Platón Sánchez 721, Centro, Monterrey, N.L.
-Tel: (81) 8114-3827
-www.fixsell.com`;
-  }
-}
-
+</html>
