@@ -12,7 +12,7 @@
         <div style="text-align: center; margin-bottom: 20px;">
             <img src="/logo.png" alt="Fixsell Logo" style="max-width: 150px; height: auto;">
         </div>
-        <h1>¡Hola! Deja tus datos.</h1>
+        <h1>¡Hola! Deja tu correo.</h1>
         <p>Regístrate para recibir ofertas e información de nuestros productos.</p>
         
         <div id="success-alert" class="alert success" style="display: none;">¡Registro exitoso! Revisa tu correo.</div>
@@ -20,21 +20,9 @@
 
         <form id="lead-form" novalidate>
             <div class="form-group">
-                <label for="name">Nombre completo</label>
-                <input type="text" id="name" name="name" required placeholder="Ej. Juan Pérez">
-                <div class="invalid-feedback">Por favor, ingresa tu nombre completo.</div>
-            </div>
-            
-            <div class="form-group">
                 <label for="email">Correo electrónico</label>
                 <input type="email" id="email" name="email" required placeholder="tu@correo.com">
                 <div class="invalid-feedback">Por favor, ingresa un correo electrónico válido.</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="company">Empresa</label>
-                <input type="text" id="company" name="company" placeholder="Ej. Mi Empresa S.A." maxlength="60">
-                <div class="invalid-feedback">La empresa no puede tener más de 60 caracteres.</div>
             </div>
 
             <button type="submit" id="submit-btn">Registrarme</button>
@@ -54,31 +42,17 @@
             const successAlert = document.getElementById('success-alert');
             const errorAlert = document.getElementById('error-alert');
             
-            const nameInput = document.getElementById('name');
             const emailInput = document.getElementById('email');
-            const companyInput = document.getElementById('company');
             
             // Limpiar errores previos
             document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
             
             let isValid = true;
             
-            // Validar nombre
-            if (!nameInput.value.trim()) {
-                nameInput.classList.add('is-invalid');
-                isValid = false;
-            }
-            
             // Validar email (formato básico)
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailInput.value.trim())) {
                 emailInput.classList.add('is-invalid');
-                isValid = false;
-            }
-
-            // Validar longitud máxima de empresa
-            if (companyInput.value.trim().length > 60) {
-                companyInput.classList.add('is-invalid');
                 isValid = false;
             }
             
@@ -91,9 +65,7 @@
             errorAlert.style.display = 'none';
 
             const formData = {
-                name: nameInput.value.trim(),
-                email: emailInput.value.trim(),
-                company: companyInput.value.trim()
+                email: emailInput.value.trim()
             };
 
             try {

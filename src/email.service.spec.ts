@@ -36,7 +36,8 @@ describe('EmailService', () => {
     );
 
     expect(html).toContain('https://fixsell-prod-assets.s3.us-east-1.amazonaws.com/app-assets/fixsell-logo.png');
-    expect(html).toContain('¡Hola, Carlos Morales!');
+    expect(html).toContain('¡Hola!');
+    expect(html).not.toContain('Carlos Morales');
     expect(html).toContain('para <strong>Empresa X</strong>');
     expect(html).toContain('#ae1d3e');
     expect(html).toContain('Platón Sánchez 721');
@@ -59,7 +60,8 @@ describe('EmailService', () => {
       ' para Empresa X',
     );
 
-    expect(text).toContain('¡Hola Carlos Morales!');
+    expect(text).toContain('¡Hola!');
+    expect(text).not.toContain('Carlos Morales');
     expect(text).toContain('Fixsell del Norte');
     expect(text).toContain('(81) 8114-3827');
     expect(text).toContain('https://www.fixsell.com');

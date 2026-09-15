@@ -43,7 +43,7 @@ export class SheetsService {
     }
   }
 
-  async addLead(name: string, email: string, company: string) {
+  async addLead(name?: string, email?: string, company?: string) {
     try {
       await this.init();
       if (!this.isInitialized) return;
@@ -52,8 +52,8 @@ export class SheetsService {
       
       await sheet.addRow({
         Fecha: new Date().toISOString(),
-        Nombre: name,
-        Email: email,
+        Nombre: name || 'N/A',
+        Email: email || '',
         Empresa: company || 'N/A'
       });
       

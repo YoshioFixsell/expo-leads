@@ -38,15 +38,42 @@ describe('AppController', () => {
   });
 
   describe('handleSubmit', () => {
-    it('should save lead and send welcome email with company name', async () => {
+    it('should save lead and send email when only email is provided', async () => {
       const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn().mockReturnThis(),
       } as any;
 
       await appController.handleSubmit(
-        'Juan Pérez',
+        'prospecto@ejemplo.com',
+        undefined,
+        undefined,
+        res,
+      );
+
+      expect(sheetsService.addLead).toHaveBeenCalledWith(
+        undefined,
+        'prospecto@ejemplo.com',
+        undefined,
+      );
+      expect(emailService.sendTestEmail).toHaveBeenCalledWith(
+        'prospecto@ejemplo.com',
+        undefined,
+        undefined,
+      );
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({ success: true });
+    });
+
+    it('should save lead and send welcome email when optional fields are present', async () => {
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+      } as any;
+
+      await appController.handleSubmit(
         'juan@empresa.com',
+        'Juan Pérez',
         'Empresa SA',
         res,
       );

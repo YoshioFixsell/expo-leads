@@ -17,7 +17,7 @@ export class EmailService {
     });
   }
 
-  async sendTestEmail(toEmail: string, name: string, company?: string) {
+  async sendTestEmail(toEmail: string, name?: string, company?: string) {
     const fromEmail = this.configService.get('SES_FROM_EMAIL');
     
     if (!fromEmail) {
@@ -31,7 +31,7 @@ export class EmailService {
     const companyTextMention = company && company.trim() 
       ? ` para ${company.trim()}` 
       : '';
-    const sanitizedName = this.escapeHtml(name.trim());
+    const sanitizedName = name && name.trim() ? this.escapeHtml(name.trim()) : '';
 
     const params = {
       Source: fromEmail,
@@ -49,7 +49,7 @@ export class EmailService {
             Charset: 'UTF-8',
           },
           Text: {
-            Data: this.buildTextTemplate(name.trim(), companyTextMention),
+            Data: this.buildTextTemplate(sanitizedName, companyTextMention),
             Charset: 'UTF-8',
           }
         },
@@ -75,7 +75,7 @@ export class EmailService {
       .replace(/'/g, '&#039;');
   }
 
-  private buildHtmlTemplate(name: string, companyMentionHtml: string): string {
+  private buildHtmlTemplate(name?: string, companyMentionHtml: string = ''): string {
     return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es">
 <head>
@@ -142,7 +142,7 @@ export class EmailService {
 
               <!-- Greeting -->
               <h1 style="margin: 0 0 16px 0; font-size: 24px; font-weight: 700; color: #0f172a; line-height: 1.3; text-align: center;">
-                ¡Hola, ${name}!
+                ¡Hola!
               </h1>
 
               <!-- Introduction -->
@@ -282,8 +282,8 @@ export class EmailService {
 </html>`;
   }
 
-  private buildTextTemplate(name: string, companyTextMention: string): string {
-    return `¡Hola ${name}!
+  private buildTextTemplate(name?: string, companyTextMention: string = ''): string {
+    return `¡Hola!
 
 Fue un gran gusto coincidir contigo en Expo Fespa 2026. Queremos agradecerte por brindarnos tus datos y por tu interés en las soluciones de Fixsell del Norte${companyTextMention}.
 

@@ -21,9 +21,9 @@ export class AppController {
 
   @Post('submit')
   async handleSubmit(
-    @Body('name') name: string,
     @Body('email') email: string,
-    @Body('company') company: string,
+    @Body('name') name: string | undefined,
+    @Body('company') company: string | undefined,
     @Res() res: Response
   ) {
     try {
